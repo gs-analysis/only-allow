@@ -7,13 +7,24 @@ if (argv.length === 0) {
   console.log('Please specify the wanted package manager: only-allow <npm|pnpm|yarn>')
   process.exit(1)
 }
+// 用户规定的包管理器，例如 npx only-allow yarn ，那么wantedPM 为 yarn
 const wantedPM = argv[0]
 if (wantedPM !== 'npm' && wantedPM !== 'pnpm' && wantedPM !== 'yarn') {
   console.log(`"${wantedPM}" is not a valid package manager. Available package managers are: npm, pnpm, or yarn.`)
   process.exit(1)
 }
+
+// 用户当前安装时 使用的包管理器
 const usedPM = whichPMRuns()
+
+// 希望使用的包管理器 不相等，则报错。
+// - npm  提示使用 npm install
+// - pnpm 提示使用 pnpm install
+// - yarn 提示使用 yarn install
+// 最后退出进程
 if (usedPM && usedPM.name !== wantedPM) {
+  // boxenOPts: boxen 的配置
+  // boxen 能让terminal的输出展示盒装的样式,让终端提示更明显
   const boxenOpts = { borderColor: 'red', borderStyle: 'double', padding: 1 }
   switch (wantedPM) {
     case 'npm':
